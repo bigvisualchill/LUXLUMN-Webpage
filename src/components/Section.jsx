@@ -16,7 +16,7 @@ const Section = forwardRef(({
       <motion.div 
         className="section__content"
         initial={{ opacity: 0 }}
-        animate={{ opacity: isActive ? 1 : 0.3 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
         {children}

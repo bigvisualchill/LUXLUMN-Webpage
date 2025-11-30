@@ -9,7 +9,9 @@ export default function useSmoothScroll(sectionCount = 5) {
   const scrollTimeoutRef = useRef(null)
 
   const scrollToSection = useCallback((index) => {
-    if (lenisRef.current && !isScrollingRef.current) {
+    if (lenisRef.current) {
+      // Reset scrolling flag to ensure navigation always works
+      isScrollingRef.current = false
       const targetScroll = index * window.innerHeight
       lenisRef.current.scrollTo(targetScroll, { 
         duration: 1.2,
@@ -25,8 +27,8 @@ export default function useSmoothScroll(sectionCount = 5) {
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: true,
-      wheelMultiplier: 0.8,
-      touchMultiplier: 1.5,
+      wheelMultiplier: -0.8, // Negative to invert scroll direction
+      touchMultiplier: -1.5, // Negative to invert touch direction
       infinite: false,
     })
 
@@ -66,6 +68,10 @@ export default function useSmoothScroll(sectionCount = 5) {
               isScrollingRef.current = false
             }
           })
+          // Safety timeout to ensure flag is reset
+          setTimeout(() => {
+            isScrollingRef.current = false
+          }, 1000)
         }
       }, 150)
     }

@@ -6,7 +6,7 @@
 
 /* CSS Variables */
 :root {
-  /* Colors */
+  /* Colors - Dark Mode (default) */
   --color-bg: #0a0a0a;
   --color-bg-elevated: #111111;
   --color-text: #ffffff;
@@ -29,6 +29,17 @@
   /* Transitions */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Light Mode Colors */
+.app--light {
+  --color-bg: #f5f5f5;
+  --color-bg-elevated: #ffffff;
+  --color-text: #0a0a0a;
+  --color-text-muted: rgba(0, 0, 0, 0.5);
+  --color-accent: #0a0a0a;
+  --color-accent-light: #0a0a0a;
+  --color-accent-glow: rgba(0, 0, 0, 0.3);
 }
 
 /* Reset */
@@ -74,6 +85,49 @@ body {
   opacity: 1;
 }
 
+.scroll-track {
+  position: relative;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.section-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  transform-style: preserve-3d;
+  --chroma-offset: 0px;
+  /* Let 3D transforms handle stacking order */
+  z-index: auto;
+}
+
+/* Ensure buttons are always clickable */
+.hero__nav-button,
+.cta-button {
+  cursor: pointer;
+  position: relative;
+}
+
+/* Chromatic aberration effect on text */
+.section-wrapper h1,
+.section-wrapper h2,
+.section-wrapper .hero__tagline-sub {
+  text-shadow: 
+    calc(var(--chroma-offset) * -1) 0 0 rgba(255, 0, 100, 0.7),
+    var(--chroma-offset) 0 0 rgba(0, 200, 255, 0.7);
+}
+
+/* Light mode chromatic aberration - same colors work well on white */
+.app--light .section-wrapper h1,
+.app--light .section-wrapper h2,
+.app--light .section-wrapper .hero__tagline-sub {
+  text-shadow: 
+    calc(var(--chroma-offset) * -1) 0 0 rgba(255, 0, 100, 0.5),
+    var(--chroma-offset) 0 0 rgba(0, 150, 255, 0.5);
+}
+
 /* ==========================================
    3D Scene
    ========================================== */
@@ -89,22 +143,29 @@ body {
 }
 
 /* ==========================================
-   Main Content
+   Main Content - 3D Depth Container
    ========================================== */
 
 .main {
-  position: relative;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
   z-index: 1;
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
 }
 
 /* ==========================================
-   Section Base
+   Section Base - 3D Depth Positioning
    ========================================== */
 
 .section {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -196,14 +257,30 @@ body {
   text-transform: uppercase;
   color: var(--color-text);
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--color-accent-glow);
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.3s var(--ease-out-expo);
 }
 
 .hero__nav-button:hover {
-  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-text);
+}
+
+/* Dark mode hover - subtle white border glow, no background */
+.app--dark .hero__nav-button:hover {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* Light mode hover - subtle black background */
+.app--light .hero__nav-button {
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.app--light .hero__nav-button:hover {
+  background: rgba(0, 0, 0, 0.1);
   border-color: var(--color-text);
 }
 

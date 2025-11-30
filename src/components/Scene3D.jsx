@@ -4,18 +4,22 @@ import { Float, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
 
-function AnimatedModel({ scrollProgress }) {
+function AnimatedModel({ scrollProgress, isDarkMode }) {
   const groupRef = useRef()
+  const meshRefs = useRef([])
+  const edgeRefs = useRef([])
   const { scene } = useGLTF('/LUX LUMN.glb')
   
-  // Create glass material with wireframe edges
+  // Create model group
   const modelGroup = useMemo(() => {
     const group = new THREE.Group()
+    meshRefs.current = []
+    edgeRefs.current = []
     
     scene.traverse((child) => {
       if (child.isMesh && child.geometry) {
-        // Glass fill - with stronger specular reflection
-        const glassMesh = new THREE.Mesh(
+        // Main mesh - material will be updated based on mode
+        const mesh = new THREE.Mesh(
           child.geometry.clone(),
           new THREE.MeshStandardMaterial({
             color: '#333333',
@@ -26,12 +30,13 @@ function AnimatedModel({ scrollProgress }) {
             side: THREE.DoubleSide,
           })
         )
-        glassMesh.position.copy(child.position)
-        glassMesh.rotation.copy(child.rotation)
-        glassMesh.scale.copy(child.scale)
-        group.add(glassMesh)
+        mesh.position.copy(child.position)
+        mesh.rotation.copy(child.rotation)
+        mesh.scale.copy(child.scale)
+        group.add(mesh)
+        meshRefs.current.push(mesh)
         
-        // Wireframe edges - white lines
+        // Wireframe edges
         const edgesGeometry = new THREE.EdgesGeometry(child.geometry, 15)
         const edgesMaterial = new THREE.LineBasicMaterial({
           color: '#ffffff',
@@ -43,11 +48,41 @@ function AnimatedModel({ scrollProgress }) {
         edges.rotation.copy(child.rotation)
         edges.scale.copy(child.scale)
         group.add(edges)
+        edgeRefs.current.push(edges)
       }
     })
     
     return group
   }, [scene])
+  
+  // Update materials when mode changes
+  useEffect(() => {
+    meshRefs.current.forEach((mesh) => {
+      if (isDarkMode) {
+        // Glass mode - transparent with specular
+        mesh.material.color.setHex(0x333333)
+        mesh.material.metalness = 0.9
+        mesh.material.roughness = 0.05
+        mesh.material.transparent = true
+        mesh.material.opacity = 0.4
+      } else {
+        // Glossy black solid mode - fully opaque
+        mesh.material.color.setHex(0x080808)
+        mesh.material.metalness = 0.98
+        mesh.material.roughness = 0.08
+        mesh.material.transparent = false
+        mesh.material.opacity = 1.0
+        mesh.material.depthWrite = true
+      }
+      mesh.material.needsUpdate = true
+    })
+    
+    edgeRefs.current.forEach((edge) => {
+      // Edges: white in dark mode, black in light mode
+      edge.material.color.setHex(isDarkMode ? 0xffffff : 0x000000)
+      edge.material.needsUpdate = true
+    })
+  }, [isDarkMode])
   
   // Create rotation based on scroll - keep upright, spin on Y axis
   useFrame((state) => {
@@ -114,7 +149,7 @@ function RectLight() {
   return null
 }
 
-function Particles({ count = 100 }) {
+function Particles({ count = 100, isDarkMode }) {
   const points = useMemo(() => {
     const positions = new Float32Array(count * 3)
     for (let i = 0; i < count; i++) {
@@ -146,7 +181,7 @@ function Particles({ count = 100 }) {
       </bufferGeometry>
       <pointsMaterial
         size={0.03}
-        color="#ffffff"
+        color={isDarkMode ? "#ffffff" : "#000000"}
         transparent
         opacity={0.6}
         sizeAttenuation
@@ -155,7 +190,7 @@ function Particles({ count = 100 }) {
   )
 }
 
-export default function Scene3D({ scrollProgress = 0 }) {
+export default function Scene3D({ scrollProgress = 0, isDarkMode = true }) {
   return (
     <div className="scene-container">
       <Canvas
@@ -163,14 +198,14 @@ export default function Scene3D({ scrollProgress = 0 }) {
         gl={{ antialias: true, alpha: true }}
         dpr={[1, 2]}
       >
-        <color attach="background" args={['#0a0a0a']} />
+        <color attach="background" args={[isDarkMode ? '#0a0a0a' : '#f5f5f5']} />
         
         {/* Single rectangular light with hard edges */}
         <RectLight />
         
         {/* 3D Elements */}
-        <AnimatedModel scrollProgress={scrollProgress} />
-        <Particles count={150} />
+        <AnimatedModel scrollProgress={scrollProgress} isDarkMode={isDarkMode} />
+        <Particles count={150} isDarkMode={isDarkMode} />
       </Canvas>
     </div>
   )

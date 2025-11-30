@@ -121,19 +121,8 @@ export function AnimatedLines({ lines, isVisible, className = '' }) {
 
 export function AnimatedTitle({ children, isVisible, className = '', delay = 0 }) {
   return (
-    <div style={{ overflow: 'hidden' }}>
-      <motion.div
-        className={className}
-        initial={{ y: '100%', opacity: 0 }}
-        animate={isVisible ? { y: 0, opacity: 1 } : { y: '100%', opacity: 0 }}
-        transition={{
-          duration: 0.8,
-          delay: delay,
-          ease: [0.215, 0.61, 0.355, 1]
-        }}
-      >
-        {children}
-      </motion.div>
+    <div className={className}>
+      {children}
     </div>
   )
 }
