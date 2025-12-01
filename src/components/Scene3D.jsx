@@ -109,9 +109,9 @@ function AnimatedModel({ scrollProgress, isDarkMode, isGalleryOpen, galleryScrol
       // Add rotation acceleration from gallery transition and scroll (also slowed)
       // Limit total gallery rotation to 108 degrees (1.884955592 radians)
       const maxGalleryRotation = Math.PI * 0.6 // 108 degrees
-      const transitionBoost = galleryTransition * Math.PI * 0.15 // Subtle rotation on gallery open
-      const galleryScrollRotation = galleryScroll * Math.PI * 0.3 * speedMultiplier // Reduced gallery scroll rotation
-      const velocityBoost = galleryVelocity * 0.05 * speedMultiplier // Minimal velocity effect
+      const transitionBoost = galleryTransition * Math.PI * 0.03 // Very subtle rotation on gallery open (~5 degrees)
+      const galleryScrollRotation = galleryScroll * Math.PI * 0.15 * speedMultiplier // Minimal gallery scroll rotation
+      const velocityBoost = galleryVelocity * 0.02 * speedMultiplier // Tiny velocity effect
       
       // Clamp total gallery rotation contribution to 108 degrees
       const totalGalleryRotation = transitionBoost + galleryScrollRotation + velocityBoost
