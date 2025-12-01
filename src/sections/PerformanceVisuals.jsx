@@ -22,22 +22,15 @@ export default function PerformanceVisuals({ isActive, onOpenGallery }) {
           </h2>
         </AnimatedTitle>
         
-        <GalleryButton onClick={onOpenGallery} />
-      </div>
-
-      <div className="portfolio-section__content portfolio-section__content--right">
         <p className="portfolio-section__description">
           Real-time visual synthesis for live performances. We design reactive 
           visuals that breathe with the music, creating unforgettable moments 
           on stage.
         </p>
-        
-        <div className="portfolio-section__tags">
-          <span className="tag">Concerts</span>
-          <span className="tag">DJ Sets</span>
-          <span className="tag">Theater</span>
-          <span className="tag">Live Events</span>
-        </div>
+      </div>
+
+      <div className="portfolio-section__content portfolio-section__content--right">
+        <GalleryButton onClick={onOpenGallery} />
       </div>
 
       <div className="portfolio-section__accent portfolio-section__accent--right" />

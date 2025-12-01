@@ -22,22 +22,15 @@ export default function Installations({ isActive, onOpenGallery }) {
           </h2>
         </AnimatedTitle>
         
-        <GalleryButton onClick={onOpenGallery} />
-      </div>
-
-      <div className="portfolio-section__content">
         <p className="portfolio-section__description">
           Sculptural light experiences that respond to presence and touch. 
           Our installations invite participation, turning viewers into 
           co-creators of ephemeral art.
         </p>
-        
-        <div className="portfolio-section__tags">
-          <span className="tag">Museums</span>
-          <span className="tag">Galleries</span>
-          <span className="tag">Public Spaces</span>
-          <span className="tag">Brand Activations</span>
-        </div>
+      </div>
+
+      <div className="portfolio-section__content">
+        <GalleryButton onClick={onOpenGallery} />
       </div>
 
       <div className="portfolio-section__accent" />

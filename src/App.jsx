@@ -168,7 +168,7 @@ function App() {
           {/* Depth-based Content */}
           <main className="main">
             <motion.div className="section-wrapper" style={getSectionStyle(0)}>
-              <Hero isActive={activeSection === 0} onNavigate={scrollToSection} />
+              <Hero isActive={activeSection === 0} />
             </motion.div>
             <motion.div className="section-wrapper" style={getSectionStyle(1)}>
               <ProjectionMapping 

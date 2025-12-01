@@ -2,14 +2,7 @@ import { motion } from 'framer-motion'
 import Section from '../components/Section'
 import { AnimatedTitle } from '../components/AnimatedText'
 
-const sections = [
-  { index: 1, label: 'Projection Mapping' },
-  { index: 2, label: 'Performance Visuals' },
-  { index: 3, label: 'Installations' },
-  { index: 4, label: 'Logo Animation' },
-]
-
-export default function Hero({ isActive, onNavigate }) {
+export default function Hero({ isActive }) {
   return (
     <Section id="hero" isActive={isActive} className="hero">
       <div className="hero__content">
@@ -28,20 +21,6 @@ export default function Hero({ isActive, onNavigate }) {
         
         <div className="hero__tagline">
           <span className="hero__tagline-sub">LIGHT IS THE NEW ART</span>
-        </div>
-
-        <div className="hero__nav-buttons">
-          {sections.map((section) => (
-            <motion.button
-              key={section.index}
-              className="hero__nav-button"
-              onClick={() => onNavigate(section.index)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {section.label}
-            </motion.button>
-          ))}
         </div>
 
         <div className="hero__scroll-indicator">

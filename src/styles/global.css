@@ -339,7 +339,7 @@ body {
 }
 
 .portfolio-section__header {
-  margin-bottom: var(--spacing-lg);
+  margin-bottom: var(--spacing-md); /* Reduced by 50% (was var(--spacing-lg)) */
   max-width: 100%;
   overflow: hidden;
 }
@@ -393,7 +393,7 @@ body {
 }
 
 .portfolio-section__content {
-  max-width: min(600px, 100%);
+  max-width: min(360px, 100%);
   position: relative;
   z-index: 1;
 }
@@ -408,6 +408,13 @@ body {
   line-height: 1.8;
   color: var(--color-text-muted);
   margin-bottom: var(--spacing-md);
+  max-width: min(550px, 100%);
+}
+
+/* Ensure description aligns with heading - right-aligned sections */
+.portfolio-section__header--right .portfolio-section__description {
+  margin-left: auto;
+  text-align: right;
 }
 
 .portfolio-section__tags {
@@ -633,19 +640,30 @@ body {
     font-size: clamp(3rem, 20vw, 10rem);
   }
   
-  .portfolio-section__content,
-  .portfolio-section__content--right {
+  .portfolio-section__content {
     max-width: 100%;
     text-align: left;
     margin-left: 0;
+  }
+  
+  .portfolio-section__content--right {
+    max-width: 100%;
+    text-align: right;
+    margin-left: auto;
   }
   
   .portfolio-section__content--right .portfolio-section__tags {
     justify-content: flex-start;
   }
   
+  /* Keep right-aligned headers right-aligned on mobile */
   .portfolio-section__header--right {
-    text-align: left;
+    text-align: right;
+  }
+  
+  .portfolio-section__header--right .portfolio-section__description {
+    margin-left: auto;
+    text-align: right;
   }
   
   .navigation {

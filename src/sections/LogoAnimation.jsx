@@ -21,29 +21,15 @@ export default function LogoAnimation({ isActive, onOpenGallery }) {
           </h2>
         </AnimatedTitle>
         
-        <GalleryButton onClick={onOpenGallery} />
-      </div>
-
-      <div className="portfolio-section__content portfolio-section__content--right">
         <p className="portfolio-section__description">
           Bringing brand identities to life through motion. We craft logo 
           animations that capture essence and create lasting impressions 
           across all digital touchpoints.
         </p>
-        
-        <div className="portfolio-section__tags">
-          <span className="tag">Brand Identity</span>
-          <span className="tag">Motion Graphics</span>
-          <span className="tag">Intros</span>
-          <span className="tag">Social Media</span>
-        </div>
       </div>
 
-      <div className="portfolio-section__cta">
-        <a href="mailto:hello@luxlumn.com" className="cta-button">
-          <span>Get in Touch</span>
-          <span className="cta-button__arrow">→</span>
-        </a>
+      <div className="portfolio-section__content portfolio-section__content--right">
+        <GalleryButton onClick={onOpenGallery} />
       </div>
 
       <div className="portfolio-section__accent portfolio-section__accent--right" />

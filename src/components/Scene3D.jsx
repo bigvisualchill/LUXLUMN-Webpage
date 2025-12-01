@@ -107,14 +107,20 @@ function AnimatedModel({ scrollProgress, isDarkMode, isGalleryOpen, galleryScrol
       const baseRotation = scrollProgress * Math.PI * 2 + state.clock.elapsedTime * 0.1 * speedMultiplier
       
       // Add rotation acceleration from gallery transition and scroll (also slowed)
-      const transitionBoost = galleryTransition * Math.PI * 0.5
-      const galleryScrollRotation = galleryScroll * Math.PI * speedMultiplier // Slowed gallery scroll rotation
-      const velocityBoost = galleryVelocity * 0.25 * speedMultiplier // Reduced velocity effect
+      // Limit total gallery rotation to 108 degrees (1.884955592 radians)
+      const maxGalleryRotation = Math.PI * 0.6 // 108 degrees
+      const transitionBoost = galleryTransition * Math.PI * 0.15 // Subtle rotation on gallery open
+      const galleryScrollRotation = galleryScroll * Math.PI * 0.3 * speedMultiplier // Reduced gallery scroll rotation
+      const velocityBoost = galleryVelocity * 0.05 * speedMultiplier // Minimal velocity effect
+      
+      // Clamp total gallery rotation contribution to 108 degrees
+      const totalGalleryRotation = transitionBoost + galleryScrollRotation + velocityBoost
+      const clampedGalleryRotation = Math.max(-maxGalleryRotation, Math.min(maxGalleryRotation, totalGalleryRotation))
       
       // Stand model upright (rotate 90 degrees on X), then spin on Z
       groupRef.current.rotation.x = Math.PI / 2
       groupRef.current.rotation.y = 0
-      groupRef.current.rotation.z = baseRotation + transitionBoost + galleryScrollRotation + velocityBoost
+      groupRef.current.rotation.z = baseRotation + clampedGalleryRotation
       
       // Position - center when gallery is open
       const baseX = 0.8 - (scrollProgress * 1.2)

@@ -41,7 +41,7 @@ export default function useSmoothScroll(sectionCount = 5, paused = false) {
     const targetScroll = clampedSection * window.innerHeight
     
     lenisRef.current.scrollTo(targetScroll, { 
-      duration: 0.8,
+      duration: 1.0, // Slowed down by 25% (was 0.8)
       easing: (t) => 1 - Math.pow(1 - t, 4),
       onComplete: () => {
         isAnimatingRef.current = false
