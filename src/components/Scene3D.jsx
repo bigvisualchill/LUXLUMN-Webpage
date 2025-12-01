@@ -10,6 +10,7 @@ function AnimatedModel({ scrollProgress, isDarkMode, isGalleryOpen, galleryScrol
   const edgeRefs = useRef([])
   const prevGalleryScrollRef = useRef(0)
   const galleryVelocityRef = useRef(0)
+  const accumulatedRotationRef = useRef(0) // Track rotation with delta time to avoid jumps
   const { scene } = useGLTF('/LUX LUMN.glb')
   
   // Create model group
@@ -103,8 +104,11 @@ function AnimatedModel({ scrollProgress, isDarkMode, isGalleryOpen, galleryScrol
       // Slow down animation by 50% when in gallery mode
       const speedMultiplier = 1 - (galleryTransition * 0.5)
       
-      // Base rotation from section scroll
-      const baseRotation = scrollProgress * Math.PI * 2 + state.clock.elapsedTime * 0.1 * speedMultiplier
+      // Accumulate rotation using delta time (not elapsed time) to avoid jumps when speed changes
+      accumulatedRotationRef.current += delta * 0.1 * speedMultiplier
+      
+      // Base rotation from section scroll + accumulated time-based rotation
+      const baseRotation = scrollProgress * Math.PI * 2 + accumulatedRotationRef.current
       
       // Add rotation acceleration from gallery transition and scroll (also slowed)
       // Limit total gallery rotation to 108 degrees (1.884955592 radians)
