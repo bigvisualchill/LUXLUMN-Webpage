@@ -28,42 +28,25 @@ export const galleryData = {
   'performance-visuals': {
     title: 'Performance Visuals',
     items: [
-      { id: 'pv-1', type: 'image', src: '/gallery/performance-visuals/01.jpg', caption: 'Live concert visuals' },
-      { id: 'pv-2', type: 'image', src: '/gallery/performance-visuals/02.jpg', caption: 'Stage design' },
-      { id: 'pv-3', type: 'image', src: '/gallery/performance-visuals/03.jpg', caption: 'Festival performance' },
-      { id: 'pv-4', type: 'image', src: '/gallery/performance-visuals/04.jpg', caption: 'Music visualization' },
-      { id: 'pv-5', type: 'image', src: '/gallery/performance-visuals/05.jpg', caption: 'DJ booth visuals' },
-      { id: 'pv-6', type: 'image', src: '/gallery/performance-visuals/06.jpg', caption: 'Arena show' },
-      { id: 'pv-7', type: 'image', src: '/gallery/performance-visuals/07.jpg', caption: 'Light choreography' },
-      { id: 'pv-8', type: 'image', src: '/gallery/performance-visuals/08.jpg', caption: 'Immersive stage' },
+      { id: 'pv-1', type: 'image', src: '/gallery/performance-visuals/IMG_2619.jpeg', caption: '' },
+      { id: 'pv-2', type: 'image', src: '/gallery/performance-visuals/IMG_2709.jpeg', caption: '' },
+      { id: 'pv-3', type: 'image', src: '/gallery/performance-visuals/IMG_2946.jpeg', caption: '' },
+      { id: 'pv-4', type: 'image', src: '/gallery/performance-visuals/IMG_2948.jpeg', caption: '' },
     ]
   },
   
   'installations': {
     title: 'Installations',
     items: [
-      { id: 'in-1', type: 'image', src: '/gallery/installations/01.jpg', caption: 'Interactive sculpture' },
-      { id: 'in-2', type: 'image', src: '/gallery/installations/02.jpg', caption: 'Light installation' },
-      { id: 'in-3', type: 'image', src: '/gallery/installations/03.jpg', caption: 'Museum piece' },
-      { id: 'in-4', type: 'image', src: '/gallery/installations/04.jpg', caption: 'Public art' },
-      { id: 'in-5', type: 'image', src: '/gallery/installations/05.jpg', caption: 'Gallery exhibition' },
-      { id: 'in-6', type: 'image', src: '/gallery/installations/06.jpg', caption: 'Immersive room' },
-      { id: 'in-7', type: 'image', src: '/gallery/installations/07.jpg', caption: 'Kinetic installation' },
-      { id: 'in-8', type: 'image', src: '/gallery/installations/08.jpg', caption: 'Site-specific work' },
+      { id: 'in-1', type: 'image', src: '/gallery/installations/IMG_4435.jpeg', caption: '' },
+      { id: 'in-2', type: 'image', src: '/gallery/installations/IMG_4437.jpeg', caption: '' },
     ]
   },
   
   'logo-animation': {
     title: 'Logo Animation',
     items: [
-      { id: 'la-1', type: 'image', src: '/gallery/logo-animation/01.jpg', caption: 'Brand reveal' },
-      { id: 'la-2', type: 'image', src: '/gallery/logo-animation/02.jpg', caption: 'Motion graphics' },
-      { id: 'la-3', type: 'image', src: '/gallery/logo-animation/03.jpg', caption: 'Logo sting' },
-      { id: 'la-4', type: 'image', src: '/gallery/logo-animation/04.jpg', caption: 'Animated identity' },
-      { id: 'la-5', type: 'image', src: '/gallery/logo-animation/05.jpg', caption: 'Title sequence' },
-      { id: 'la-6', type: 'image', src: '/gallery/logo-animation/06.jpg', caption: 'Brand animation' },
-      { id: 'la-7', type: 'image', src: '/gallery/logo-animation/07.jpg', caption: 'Dynamic logo' },
-      { id: 'la-8', type: 'image', src: '/gallery/logo-animation/08.jpg', caption: 'Opening sequence' },
+      // Add images to /public/gallery/logo-animation/ folder
     ]
   }
 }

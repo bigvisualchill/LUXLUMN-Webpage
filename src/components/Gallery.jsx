@@ -11,90 +11,33 @@ export default function Gallery({ sectionId, isActive, onClose, onScroll }) {
   const data = sectionId ? galleryData[sectionId] : null
   const items = data?.items || []
 
-  // Reset window scroll position when gallery opens
+  // Reset gallery scroll position when gallery opens
   useEffect(() => {
-    if (isActive) {
-      window.scrollTo(0, 0)
+    if (isActive && galleryRef.current) {
+      galleryRef.current.scrollTop = 0
       onScroll?.(0)
     }
   }, [isActive, onScroll])
 
-  // Track window scroll and report to parent
-  const handleWindowScroll = useCallback(() => {
-    if (!onScroll) return
-    
-    const docHeight = document.documentElement.scrollHeight
-    const windowHeight = window.innerHeight
-    const maxScroll = docHeight - windowHeight
-    const progress = maxScroll > 0 ? window.scrollY / maxScroll : 0
-    onScroll(Math.min(1, Math.max(0, progress)))
-  }, [onScroll])
-
-  // Smooth scroll state
-  const targetScrollRef = useRef(0)
-  const currentScrollRef = useRef(0)
-  const animationRef = useRef(null)
-
-  // Smooth scroll animation
-  const animateScroll = useCallback(() => {
-    const diff = targetScrollRef.current - currentScrollRef.current
-    
-    if (Math.abs(diff) > 0.5) {
-      currentScrollRef.current += diff * 0.1 // Easing factor
-      window.scrollTo(0, currentScrollRef.current)
-      animationRef.current = requestAnimationFrame(animateScroll)
-    } else {
-      currentScrollRef.current = targetScrollRef.current
-      window.scrollTo(0, currentScrollRef.current)
-      animationRef.current = null
-    }
-  }, [])
-
-  // Use window scroll for gallery with smooth easing
+  // Track gallery scroll and report to parent
   useEffect(() => {
-    if (!isActive) return
-
-    // Initialize scroll position
-    currentScrollRef.current = window.scrollY
-    targetScrollRef.current = window.scrollY
-
-    const handleWheel = (e) => {
-      e.preventDefault()
-      e.stopImmediatePropagation()
-      
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-      
-      // Update target scroll
-      targetScrollRef.current += e.deltaY
-      targetScrollRef.current = Math.max(0, Math.min(targetScrollRef.current, maxScroll))
-      
-      // Start animation if not running
-      if (!animationRef.current) {
-        animationRef.current = requestAnimationFrame(animateScroll)
-      }
-    }
-
-    const blockLenis = (e) => {
-      e.stopImmediatePropagation()
-    }
-
-    // Capture wheel for smooth scrolling
-    window.addEventListener('wheel', handleWheel, { passive: false, capture: true })
-    window.addEventListener('touchmove', blockLenis, { capture: true })
+    if (!isActive || !galleryRef.current) return
     
-    // Listen for scroll to report progress
-    window.addEventListener('scroll', handleWindowScroll, { passive: true })
+    const gallery = galleryRef.current
+    
+    const handleGalleryScroll = () => {
+      if (!onScroll) return
+      const maxScroll = gallery.scrollHeight - gallery.clientHeight
+      const progress = maxScroll > 0 ? gallery.scrollTop / maxScroll : 0
+      onScroll(Math.min(1, Math.max(0, progress)))
+    }
+    
+    gallery.addEventListener('scroll', handleGalleryScroll, { passive: true })
     
     return () => {
-      window.removeEventListener('wheel', handleWheel, { capture: true })
-      window.removeEventListener('touchmove', blockLenis, { capture: true })
-      window.removeEventListener('scroll', handleWindowScroll)
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current)
-        animationRef.current = null
-      }
+      gallery.removeEventListener('scroll', handleGalleryScroll)
     }
-  }, [isActive, handleWindowScroll, animateScroll])
+  }, [isActive, onScroll])
 
   const handleItemClick = (item) => {
     setLightboxItem(item)
@@ -105,55 +48,17 @@ export default function Gallery({ sectionId, isActive, onClose, onScroll }) {
   }
 
   return (
-    <div 
-      ref={galleryRef}
-      className={`gallery ${isActive ? 'gallery--active' : ''}`}
-    >
+    <>
+      {/* Fixed UI elements - outside transformed gallery for proper fixed positioning */}
       {data && (
         <>
-          {/* Gallery header */}
-          <div className="gallery__header">
+          <div className={`gallery__header ${isActive ? 'gallery__header--active' : ''}`}>
             <h2 className="gallery__title">{data.title}</h2>
             <span className="gallery__count">{items.length} images</span>
           </div>
 
-          {/* Photo grid */}
-          <div ref={contentRef} className="gallery__grid">
-            {items.map((item, index) => (
-              <motion.div
-                key={item.id}
-                className="gallery__grid-item"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 20 }}
-                transition={{ duration: 0.4, delay: isActive ? 0.2 + index * 0.03 : 0 }}
-                onClick={() => handleItemClick(item)}
-              >
-                {item.type === 'video' ? (
-                  <video
-                    className="gallery__grid-media"
-                    src={item.src}
-                    muted
-                    loop
-                    playsInline
-                  />
-                ) : (
-                  <img
-                    className="gallery__grid-media"
-                    src={item.src}
-                    alt={item.caption || ''}
-                    loading="lazy"
-                  />
-                )}
-                <div className="gallery__grid-overlay">
-                  <span>View</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Return button */}
           <button 
-            className="gallery__return"
+            className={`gallery__return ${isActive ? 'gallery__return--active' : ''}`}
             onClick={onClose}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -161,16 +66,64 @@ export default function Gallery({ sectionId, isActive, onClose, onScroll }) {
             </svg>
             <span>Return</span>
           </button>
-
-          {/* Lightbox */}
-          {lightboxItem && (
-            <GalleryLightbox 
-              item={lightboxItem} 
-              onClose={handleLightboxClose} 
-            />
-          )}
         </>
       )}
-    </div>
+
+      {/* Gallery content - this gets transformed */}
+      <div 
+        ref={galleryRef}
+        className={`gallery ${isActive ? 'gallery--active' : ''}`}
+      >
+        {data && (
+          <>
+            {/* Photo grid */}
+            <div ref={contentRef} className="gallery__grid">
+              {items.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  className="gallery__grid-item"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: isActive ? 1 : 0 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    delay: isActive ? 1.0 + index * 0.1 : 0,
+                    ease: "easeOut"
+                  }}
+                  onClick={() => handleItemClick(item)}
+                >
+                  {item.type === 'video' ? (
+                    <video
+                      className="gallery__grid-media"
+                      src={item.src}
+                      muted
+                      loop
+                      playsInline
+                    />
+                  ) : (
+                    <img
+                      className="gallery__grid-media"
+                      src={item.src}
+                      alt={item.caption || ''}
+                      loading="lazy"
+                    />
+                  )}
+                  <div className="gallery__grid-overlay">
+                    <span>View</span>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Lightbox */}
+            {lightboxItem && (
+              <GalleryLightbox 
+                item={lightboxItem} 
+                onClose={handleLightboxClose} 
+              />
+            )}
+          </>
+        )}
+      </div>
+    </>
   )
 }

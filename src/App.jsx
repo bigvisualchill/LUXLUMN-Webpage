@@ -14,6 +14,14 @@ import './styles/gallery.css'
 
 const SECTION_DEPTH = 1000 // Distance between sections in z-space
 
+// Map gallery IDs to section indices
+const GALLERY_SECTION_MAP = {
+  'projection-mapping': 1,
+  'performance-visuals': 2,
+  'installations': 3,
+  'logo-animation': 4
+}
+
 function App() {
   const [isLoaded, setIsLoaded] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(true)
@@ -51,6 +59,25 @@ function App() {
     return () => clearTimeout(timer)
   }, [])
 
+  // Open gallery handler
+  const handleOpenGallery = useCallback((sectionId) => {
+    setActiveGallery(sectionId)
+  }, [])
+
+  // Close gallery handler - return to the section that opened it
+  const handleCloseGallery = useCallback(() => {
+    const sectionIndex = GALLERY_SECTION_MAP[activeGallery]
+    
+    // Set scroll position IMMEDIATELY before closing gallery
+    // This ensures the correct section is visible as the gallery slides away
+    if (sectionIndex !== undefined) {
+      const targetScroll = sectionIndex * window.innerHeight
+      window.scrollTo(0, targetScroll)
+    }
+    
+    setActiveGallery(null)
+  }, [activeGallery])
+
   // Toggle color scheme with 'x' key
   const handleKeyDown = useCallback((e) => {
     if (e.key === 'x' || e.key === 'X') {
@@ -58,24 +85,14 @@ function App() {
     }
     // Close gallery with Escape
     if (e.key === 'Escape' && activeGallery) {
-      setActiveGallery(null)
+      handleCloseGallery()
     }
-  }, [activeGallery])
+  }, [activeGallery, handleCloseGallery])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
-
-  // Open gallery handler
-  const handleOpenGallery = useCallback((sectionId) => {
-    setActiveGallery(sectionId)
-  }, [])
-
-  // Close gallery handler
-  const handleCloseGallery = useCallback(() => {
-    setActiveGallery(null)
-  }, [])
 
   // Calculate z-position based on scroll progress
   // As we scroll DOWN, camera moves forward (into the scene)
@@ -179,8 +196,8 @@ function App() {
             </motion.div>
           </main>
 
-          {/* Scroll Track - invisible element that creates scrollable height (hidden when gallery open) */}
-          {!isGalleryOpen && <div className="scroll-track" style={{ height: '500vh' }} />}
+          {/* Scroll Track - invisible element that creates scrollable height */}
+          <div className="scroll-track" style={{ height: '500vh' }} />
 
           {/* Gallery - in document flow for native browser scrolling */}
           <Gallery 
