@@ -11,26 +11,15 @@ export const galleryData = {
     title: 'Projection Mapping',
     events: [
       {
-        id: 'sample-event',
-        title: 'Sample Projection Event',
-        description: 'A showcase of architectural projection mapping transforming buildings into living canvases.',
-        thumbnail: '/gallery/projection-mapping/sample-event/IMG_0074.jpeg',
+        id: 'north-park-music-festival',
+        title: 'North Park Music Festival',
+        description: 'Created a dynamically evolving black and white mural and projected it on the side of the historic Observatory Theater for the North Park Music Festival.',
+        thumbnail: '/gallery/projection-mapping/North Park Music Festival/IMG_1820.jpeg',
         images: [
-          { id: 'pm-1', src: '/gallery/projection-mapping/sample-event/F46B17ED-5F68-476A-BFFD-CEB5CBFEC13D.jpg' },
-          { id: 'pm-2', src: '/gallery/projection-mapping/sample-event/IMG_0074.jpeg' },
-          { id: 'pm-3', src: '/gallery/projection-mapping/sample-event/IMG_0361.jpeg' },
-          { id: 'pm-4', src: '/gallery/projection-mapping/sample-event/IMG_1226.jpeg' },
-          { id: 'pm-5', src: '/gallery/projection-mapping/sample-event/IMG_1820.jpeg' },
-          { id: 'pm-6', src: '/gallery/projection-mapping/sample-event/IMG_2038.jpg' },
-          { id: 'pm-7', src: '/gallery/projection-mapping/sample-event/IMG_2594.jpeg' },
-          { id: 'pm-8', src: '/gallery/projection-mapping/sample-event/IMG_2603.jpeg' },
-          { id: 'pm-9', src: '/gallery/projection-mapping/sample-event/IMG_2610.jpeg' },
-          { id: 'pm-10', src: '/gallery/projection-mapping/sample-event/IMG_2676.jpeg' },
-          { id: 'pm-11', src: '/gallery/projection-mapping/sample-event/IMG_3287.jpeg' },
-          { id: 'pm-12', src: '/gallery/projection-mapping/sample-event/IMG_3319.jpeg' },
-          { id: 'pm-13', src: '/gallery/projection-mapping/sample-event/IMG_3320.jpeg' },
-          { id: 'pm-14', src: '/gallery/projection-mapping/sample-event/IMG_4792.jpeg' },
-          { id: 'pm-15', src: '/gallery/projection-mapping/sample-event/IMG_5080.jpeg' },
+          { id: 'npm-1', src: '/gallery/projection-mapping/North Park Music Festival/IMG_1820.jpeg' },
+          { id: 'npm-2', src: '/gallery/projection-mapping/North Park Music Festival/IMG_3287.jpeg' },
+          { id: 'npm-3', src: '/gallery/projection-mapping/North Park Music Festival/IMG_3319.jpeg' },
+          { id: 'npm-4', src: '/gallery/projection-mapping/North Park Music Festival/IMG_3320.jpeg' },
         ]
       }
     ]
