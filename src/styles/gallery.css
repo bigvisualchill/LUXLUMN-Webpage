@@ -1,0 +1,374 @@
+/* ==========================================
+   Gallery Styles
+   ========================================== */
+
+/* ==========================================
+   Gallery Button (in sections)
+   ========================================== */
+
+.gallery-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: clamp(0.625rem, 1.5vw, 0.875rem) clamp(1rem, 2.5vw, 1.75rem);
+  margin-top: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid var(--color-accent-glow);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-out-expo);
+  position: relative;
+  z-index: 10;
+}
+
+.gallery-button:hover {
+  border-color: var(--color-text);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.app--light .gallery-button:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.gallery-button__arrow {
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.gallery-button:hover .gallery-button__arrow {
+  transform: translateX(4px);
+}
+
+/* ==========================================
+   Gallery Container
+   ========================================== */
+
+.gallery {
+  display: none;
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: transparent;
+}
+
+.gallery--active {
+  display: block;
+}
+
+/* ==========================================
+   Gallery Header
+   ========================================== */
+
+.gallery__header {
+  position: fixed;
+  top: var(--spacing-lg);
+  left: var(--spacing-lg);
+  z-index: 110;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: rgba(var(--color-bg-rgb), 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 4px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.gallery--active .gallery__header {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.2s;
+}
+
+.gallery__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 3vw, 2.5rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-xs);
+}
+
+.gallery__count {
+  font-family: var(--font-body);
+  font-size: clamp(0.625rem, 1.5vw, 0.75rem);
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+/* ==========================================
+   Gallery Photo Grid
+   ========================================== */
+
+.gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--spacing-md);
+  padding: calc(var(--spacing-lg) * 4) var(--spacing-lg) calc(var(--spacing-lg) * 3);
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+.gallery__grid-item {
+  position: relative;
+  cursor: pointer;
+  border-radius: 4px;
+  overflow: hidden;
+  background: rgba(var(--color-bg-rgb), 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(var(--color-bg-rgb), 0.3);
+  transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+}
+
+.gallery__grid-item:hover {
+  transform: scale(1.02);
+  z-index: 5;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.4),
+    0 0 1px rgba(255, 255, 255, 0.1);
+}
+
+.gallery__grid-media {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.gallery__grid-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.gallery__grid-item:hover .gallery__grid-overlay {
+  opacity: 1;
+}
+
+.gallery__grid-overlay span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* ==========================================
+   Gallery Return Button
+   ========================================== */
+
+.gallery__return {
+  position: fixed;
+  bottom: var(--spacing-lg);
+  left: var(--spacing-lg);
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: clamp(0.625rem, 1.5vw, 0.875rem) clamp(1rem, 2vw, 1.5rem);
+  font-family: var(--font-body);
+  font-size: clamp(0.65rem, 1.5vw, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: rgba(var(--color-bg-rgb), 0.7);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--color-accent-glow);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out-expo);
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.gallery--active .gallery__return {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.3s;
+}
+
+.gallery__return:hover {
+  border-color: var(--color-text);
+  background: rgba(var(--color-bg-rgb), 0.85);
+}
+
+.gallery__return svg {
+  transition: transform 0.3s var(--ease-out-expo);
+}
+
+.gallery__return:hover svg {
+  transform: translateX(-4px);
+}
+
+/* ==========================================
+   Gallery Lightbox
+   ========================================== */
+
+.gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  padding: var(--spacing-lg);
+}
+
+.gallery-lightbox__close {
+  position: absolute;
+  top: var(--spacing-md);
+  right: var(--spacing-md);
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.gallery-lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.gallery-lightbox__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 90vw;
+  max-height: 85vh;
+  text-align: center;
+}
+
+.gallery-lightbox__media-wrapper {
+  position: relative;
+  max-width: 100%;
+  max-height: calc(85vh - 60px);
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 40px 100px rgba(0, 0, 0, 0.5);
+}
+
+.gallery-lightbox__media {
+  display: block;
+  max-width: 100%;
+  max-height: calc(85vh - 60px);
+  object-fit: contain;
+}
+
+.gallery-lightbox__caption {
+  margin-top: var(--spacing-md);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+}
+
+/* ==========================================
+   App Layout
+   ========================================== */
+
+.app__content-wrapper {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.app--gallery-open {
+  /* Gallery uses custom smooth scroll */
+}
+
+.app__main-view {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
+}
+
+/* Fade out section content but keep 3D scene visible during transition */
+.app--gallery-open .main {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.app--gallery-open .brand-mark {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.app--gallery-open .navigation {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.app__gallery-view {
+  /* Gallery is fixed position, this is just a wrapper */
+}
+
+/* ==========================================
+   Responsive
+   ========================================== */
+
+@media (max-width: 768px) {
+  .gallery__grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: var(--spacing-sm);
+    padding: calc(var(--spacing-lg) * 3) var(--spacing-md) calc(var(--spacing-lg) * 2.5);
+  }
+  
+  .gallery__header {
+    top: var(--spacing-md);
+    left: var(--spacing-md);
+  }
+  
+  .gallery__return {
+    bottom: var(--spacing-md);
+    left: var(--spacing-md);
+    padding: 0.75rem 1rem;
+  }
+  
+  .gallery-lightbox {
+    padding: var(--spacing-md);
+  }
+  
+  .gallery-lightbox__close {
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .gallery__grid {
+    grid-template-columns: 1fr;
+  }
+}

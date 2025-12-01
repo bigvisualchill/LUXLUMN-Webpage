@@ -1,7 +1,8 @@
 import Section from '../components/Section'
 import { AnimatedTitle } from '../components/AnimatedText'
+import GalleryButton from '../components/GalleryButton'
 
-export default function LogoAnimation({ isActive }) {
+export default function LogoAnimation({ isActive, onOpenGallery }) {
   return (
     <Section id="logo-animation" isActive={isActive} className="portfolio-section portfolio-section--alt portfolio-section--final">
       <div className="portfolio-section__header portfolio-section__header--right">
@@ -19,6 +20,8 @@ export default function LogoAnimation({ isActive }) {
             ANIMATION
           </h2>
         </AnimatedTitle>
+        
+        <GalleryButton onClick={onOpenGallery} />
       </div>
 
       <div className="portfolio-section__content portfolio-section__content--right">

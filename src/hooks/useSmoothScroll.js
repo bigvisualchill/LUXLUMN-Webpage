@@ -1,15 +1,32 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import Lenis from 'lenis'
 
-export default function useSmoothScroll(sectionCount = 5) {
+export default function useSmoothScroll(sectionCount = 5, paused = false) {
   const lenisRef = useRef(null)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [activeSection, setActiveSection] = useState(0)
   const isScrollingRef = useRef(false)
   const scrollTimeoutRef = useRef(null)
+  const pausedRef = useRef(paused)
+
+  // Keep pausedRef in sync
+  useEffect(() => {
+    pausedRef.current = paused
+  }, [paused])
+
+  // Stop/start Lenis when paused changes
+  useEffect(() => {
+    if (lenisRef.current) {
+      if (paused) {
+        lenisRef.current.stop()
+      } else {
+        lenisRef.current.start()
+      }
+    }
+  }, [paused])
 
   const scrollToSection = useCallback((index) => {
-    if (lenisRef.current) {
+    if (lenisRef.current && !paused) {
       // Reset scrolling flag to ensure navigation always works
       isScrollingRef.current = false
       const targetScroll = index * window.innerHeight
@@ -18,7 +35,7 @@ export default function useSmoothScroll(sectionCount = 5) {
         easing: (t) => 1 - Math.pow(1 - t, 4) // easeOutQuart
       })
     }
-  }, [])
+  }, [paused])
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -48,11 +65,15 @@ export default function useSmoothScroll(sectionCount = 5) {
 
     // Snap to sections after scroll ends
     const handleWheel = (e) => {
-      if (isScrollingRef.current) return
+      // Skip if paused (gallery is open) or already scrolling
+      if (pausedRef.current || isScrollingRef.current) return
       
       clearTimeout(scrollTimeoutRef.current)
       
       scrollTimeoutRef.current = setTimeout(() => {
+        // Double-check we're not paused
+        if (pausedRef.current) return
+        
         const scroll = lenis.scroll
         const sectionHeight = window.innerHeight
         const currentSection = Math.round(scroll / sectionHeight)

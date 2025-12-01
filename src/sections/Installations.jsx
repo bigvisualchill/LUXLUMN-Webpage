@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import Section from '../components/Section'
 import { AnimatedTitle } from '../components/AnimatedText'
+import GalleryButton from '../components/GalleryButton'
 
-export default function Installations({ isActive }) {
+export default function Installations({ isActive, onOpenGallery }) {
   return (
     <Section id="installations" isActive={isActive} className="portfolio-section">
       <div className="portfolio-section__header">
@@ -20,6 +21,8 @@ export default function Installations({ isActive }) {
             INSTALLATIONS
           </h2>
         </AnimatedTitle>
+        
+        <GalleryButton onClick={onOpenGallery} />
       </div>
 
       <div className="portfolio-section__content">
@@ -41,4 +44,3 @@ export default function Installations({ isActive }) {
     </Section>
   )
 }
-

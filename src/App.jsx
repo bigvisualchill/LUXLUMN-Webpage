@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Scene3D from './components/Scene3D'
 import Navigation from './components/Navigation'
+import Gallery from './components/Gallery'
 import useSmoothScroll from './hooks/useSmoothScroll'
 import Hero from './sections/Hero'
 import ProjectionMapping from './sections/ProjectionMapping'
@@ -9,13 +10,40 @@ import PerformanceVisuals from './sections/PerformanceVisuals'
 import Installations from './sections/Installations'
 import LogoAnimation from './sections/LogoAnimation'
 import './styles/global.css'
+import './styles/gallery.css'
 
 const SECTION_DEPTH = 1000 // Distance between sections in z-space
 
 function App() {
-  const { scrollProgress, activeSection, scrollToSection } = useSmoothScroll(5)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isDarkMode, setIsDarkMode] = useState(true)
+  const [activeGallery, setActiveGallery] = useState(null)
+  const [galleryScroll, setGalleryScroll] = useState(0)
+  const galleryTransitionRef = useRef(0)
+  
+  const isGalleryOpen = activeGallery !== null
+  const { scrollProgress, activeSection, scrollToSection } = useSmoothScroll(5, isGalleryOpen)
+  
+  // Animate gallery transition value for smooth 3D object response
+  useEffect(() => {
+    const targetValue = isGalleryOpen ? 1 : 0
+    let animationFrame
+    
+    const animate = () => {
+      const current = galleryTransitionRef.current
+      const diff = targetValue - current
+      
+      if (Math.abs(diff) > 0.001) {
+        galleryTransitionRef.current += diff * 0.08 // Smooth interpolation
+        animationFrame = requestAnimationFrame(animate)
+      } else {
+        galleryTransitionRef.current = targetValue
+      }
+    }
+    
+    animationFrame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(animationFrame)
+  }, [isGalleryOpen])
 
   useEffect(() => {
     // Trigger initial animations after mount
@@ -28,12 +56,26 @@ function App() {
     if (e.key === 'x' || e.key === 'X') {
       setIsDarkMode(prev => !prev)
     }
-  }, [])
+    // Close gallery with Escape
+    if (e.key === 'Escape' && activeGallery) {
+      setActiveGallery(null)
+    }
+  }, [activeGallery])
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
+
+  // Open gallery handler
+  const handleOpenGallery = useCallback((sectionId) => {
+    setActiveGallery(sectionId)
+  }, [])
+
+  // Close gallery handler
+  const handleCloseGallery = useCallback(() => {
+    setActiveGallery(null)
+  }, [])
 
   // Calculate z-position based on scroll progress
   // As we scroll DOWN, camera moves forward (into the scene)
@@ -86,41 +128,73 @@ function App() {
   }
 
   return (
-    <div className={`app ${isLoaded ? 'app--loaded' : ''} ${isDarkMode ? 'app--dark' : 'app--light'}`}>
-      {/* Fixed 3D Background */}
-      <Scene3D scrollProgress={scrollProgress} isDarkMode={isDarkMode} />
-      
-      {/* Navigation Dots */}
-      <Navigation 
-        activeSection={activeSection} 
-        onNavigate={scrollToSection}
-      />
+    <div className={`app ${isLoaded ? 'app--loaded' : ''} ${isDarkMode ? 'app--dark' : 'app--light'} ${isGalleryOpen ? 'app--gallery-open' : ''}`}>
+      {/* Horizontal sliding wrapper */}
+      <div className="app__content-wrapper">
+        {/* Main View */}
+        <div className="app__main-view">
+          {/* Fixed 3D Background */}
+          <Scene3D 
+            scrollProgress={scrollProgress} 
+            isDarkMode={isDarkMode}
+            isGalleryOpen={isGalleryOpen}
+            galleryScroll={galleryScroll}
+            galleryTransitionRef={galleryTransitionRef}
+          />
+          
+          {/* Navigation Dots */}
+          <Navigation 
+            activeSection={activeSection} 
+            onNavigate={scrollToSection}
+          />
 
-      {/* Depth-based Content */}
-      <main className="main">
-        <motion.div className="section-wrapper" style={getSectionStyle(0)}>
-          <Hero isActive={activeSection === 0} onNavigate={scrollToSection} />
-        </motion.div>
-        <motion.div className="section-wrapper" style={getSectionStyle(1)}>
-          <ProjectionMapping isActive={activeSection === 1} />
-        </motion.div>
-        <motion.div className="section-wrapper" style={getSectionStyle(2)}>
-          <PerformanceVisuals isActive={activeSection === 2} />
-        </motion.div>
-        <motion.div className="section-wrapper" style={getSectionStyle(3)}>
-          <Installations isActive={activeSection === 3} />
-        </motion.div>
-        <motion.div className="section-wrapper" style={getSectionStyle(4)}>
-          <LogoAnimation isActive={activeSection === 4} />
-        </motion.div>
-      </main>
+          {/* Depth-based Content */}
+          <main className="main">
+            <motion.div className="section-wrapper" style={getSectionStyle(0)}>
+              <Hero isActive={activeSection === 0} onNavigate={scrollToSection} />
+            </motion.div>
+            <motion.div className="section-wrapper" style={getSectionStyle(1)}>
+              <ProjectionMapping 
+                isActive={activeSection === 1} 
+                onOpenGallery={() => handleOpenGallery('projection-mapping')}
+              />
+            </motion.div>
+            <motion.div className="section-wrapper" style={getSectionStyle(2)}>
+              <PerformanceVisuals 
+                isActive={activeSection === 2}
+                onOpenGallery={() => handleOpenGallery('performance-visuals')}
+              />
+            </motion.div>
+            <motion.div className="section-wrapper" style={getSectionStyle(3)}>
+              <Installations 
+                isActive={activeSection === 3}
+                onOpenGallery={() => handleOpenGallery('installations')}
+              />
+            </motion.div>
+            <motion.div className="section-wrapper" style={getSectionStyle(4)}>
+              <LogoAnimation 
+                isActive={activeSection === 4}
+                onOpenGallery={() => handleOpenGallery('logo-animation')}
+              />
+            </motion.div>
+          </main>
 
-      {/* Scroll Track - invisible element that creates scrollable height */}
-      <div className="scroll-track" style={{ height: '500vh' }} />
+          {/* Scroll Track - invisible element that creates scrollable height (hidden when gallery open) */}
+          {!isGalleryOpen && <div className="scroll-track" style={{ height: '500vh' }} />}
 
-      {/* Brand Mark */}
-      <div className="brand-mark">
-        <span>LUX LUMN</span>
+          {/* Gallery - in document flow for native browser scrolling */}
+          <Gallery 
+            sectionId={activeGallery}
+            isActive={isGalleryOpen}
+            onClose={handleCloseGallery}
+            onScroll={setGalleryScroll}
+          />
+
+          {/* Brand Mark */}
+          <div className="brand-mark">
+            <span>LUX LUMN</span>
+          </div>
+        </div>
       </div>
     </div>
   )

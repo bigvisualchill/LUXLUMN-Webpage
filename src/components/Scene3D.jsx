@@ -4,10 +4,12 @@ import { Float, useGLTF } from '@react-three/drei'
 import * as THREE from 'three'
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js'
 
-function AnimatedModel({ scrollProgress, isDarkMode }) {
+function AnimatedModel({ scrollProgress, isDarkMode, isGalleryOpen, galleryScroll, galleryTransitionRef }) {
   const groupRef = useRef()
   const meshRefs = useRef([])
   const edgeRefs = useRef([])
+  const prevGalleryScrollRef = useRef(0)
+  const galleryVelocityRef = useRef(0)
   const { scene } = useGLTF('/LUX LUMN.glb')
   
   // Create model group
@@ -85,24 +87,52 @@ function AnimatedModel({ scrollProgress, isDarkMode }) {
   }, [isDarkMode])
   
   // Create rotation based on scroll - keep upright, spin on Y axis
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (groupRef.current) {
-      // Stand model upright (rotate 90 degrees on X), then spin on Y
+      // Get gallery transition progress (0 = closed, 1 = open)
+      const galleryTransition = galleryTransitionRef?.current || 0
+      
+      // Calculate gallery scroll velocity for acceleration effect
+      const scrollDelta = galleryScroll - prevGalleryScrollRef.current
+      prevGalleryScrollRef.current = galleryScroll
+      
+      // Smooth the velocity
+      galleryVelocityRef.current += (scrollDelta * 15 - galleryVelocityRef.current) * 0.1
+      const galleryVelocity = galleryVelocityRef.current
+      
+      // Slow down animation by 50% when in gallery mode
+      const speedMultiplier = 1 - (galleryTransition * 0.5)
+      
+      // Base rotation from section scroll
+      const baseRotation = scrollProgress * Math.PI * 2 + state.clock.elapsedTime * 0.1 * speedMultiplier
+      
+      // Add rotation acceleration from gallery transition and scroll (also slowed)
+      const transitionBoost = galleryTransition * Math.PI * 0.5
+      const galleryScrollRotation = galleryScroll * Math.PI * speedMultiplier // Slowed gallery scroll rotation
+      const velocityBoost = galleryVelocity * 0.25 * speedMultiplier // Reduced velocity effect
+      
+      // Stand model upright (rotate 90 degrees on X), then spin on Z
       groupRef.current.rotation.x = Math.PI / 2
       groupRef.current.rotation.y = 0
-      groupRef.current.rotation.z = scrollProgress * Math.PI * 2 + state.clock.elapsedTime * 0.1
+      groupRef.current.rotation.z = baseRotation + transitionBoost + galleryScrollRotation + velocityBoost
       
-      // Parallax position - centered, mid-page height
-      // Subtle horizontal drift, stays mostly in frame
-      groupRef.current.position.x = 0.8 - (scrollProgress * 1.2)
+      // Position - center when gallery is open
+      const baseX = 0.8 - (scrollProgress * 1.2)
+      const centeredX = 0 // Center position
+      const targetX = baseX + (centeredX - baseX) * galleryTransition // Interpolate to center
+      groupRef.current.position.x = targetX
       
       // Lower position (mid-page) with floating based on scroll
       const floatY = Math.sin(scrollProgress * Math.PI * 4) * 0.4
-      groupRef.current.position.y = -1.5 + floatY
+      const galleryFloatY = Math.sin(galleryScroll * Math.PI * 3) * 0.15 * speedMultiplier // Gentler float
+      const centeredY = -1.2 // Slightly higher when centered
+      const baseY = -1.5 + floatY
+      groupRef.current.position.y = baseY + (centeredY - baseY) * galleryTransition + galleryFloatY
       
       // Floating depth based on scroll (forward/back on Z)
       const floatZ = Math.sin(scrollProgress * Math.PI * 3) * 0.6
-      groupRef.current.position.z = floatZ
+      const galleryFloatZ = Math.sin(galleryScroll * Math.PI * 2) * 0.2 * speedMultiplier // Gentler depth
+      groupRef.current.position.z = floatZ * (1 - galleryTransition) + galleryFloatZ
       
       // Scale (base scale 10 = 500% of original)
       groupRef.current.scale.setScalar(10)
@@ -190,7 +220,13 @@ function Particles({ count = 100, isDarkMode }) {
   )
 }
 
-export default function Scene3D({ scrollProgress = 0, isDarkMode = true }) {
+export default function Scene3D({ 
+  scrollProgress = 0, 
+  isDarkMode = true, 
+  isGalleryOpen = false,
+  galleryScroll = 0,
+  galleryTransitionRef
+}) {
   return (
     <div className="scene-container">
       <Canvas
@@ -204,7 +240,13 @@ export default function Scene3D({ scrollProgress = 0, isDarkMode = true }) {
         <RectLight />
         
         {/* 3D Elements */}
-        <AnimatedModel scrollProgress={scrollProgress} isDarkMode={isDarkMode} />
+        <AnimatedModel 
+          scrollProgress={scrollProgress} 
+          isDarkMode={isDarkMode}
+          isGalleryOpen={isGalleryOpen}
+          galleryScroll={galleryScroll}
+          galleryTransitionRef={galleryTransitionRef}
+        />
         <Particles count={150} isDarkMode={isDarkMode} />
       </Canvas>
     </div>

@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import Section from '../components/Section'
 import { AnimatedTitle } from '../components/AnimatedText'
+import GalleryButton from '../components/GalleryButton'
 
-export default function PerformanceVisuals({ isActive }) {
+export default function PerformanceVisuals({ isActive, onOpenGallery }) {
   return (
     <Section id="performance-visuals" isActive={isActive} className="portfolio-section portfolio-section--alt">
       <div className="portfolio-section__header portfolio-section__header--right">
@@ -20,6 +21,8 @@ export default function PerformanceVisuals({ isActive }) {
             VISUALS
           </h2>
         </AnimatedTitle>
+        
+        <GalleryButton onClick={onOpenGallery} />
       </div>
 
       <div className="portfolio-section__content portfolio-section__content--right">
@@ -41,4 +44,3 @@ export default function PerformanceVisuals({ isActive }) {
     </Section>
   )
 }
-

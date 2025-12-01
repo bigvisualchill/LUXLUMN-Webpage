@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
 import Section from '../components/Section'
 import { AnimatedTitle, AnimatedLines } from '../components/AnimatedText'
+import GalleryButton from '../components/GalleryButton'
 
-export default function ProjectionMapping({ isActive }) {
+export default function ProjectionMapping({ isActive, onOpenGallery }) {
   return (
     <Section id="projection-mapping" isActive={isActive} className="portfolio-section">
       <div className="portfolio-section__header">
@@ -20,6 +21,8 @@ export default function ProjectionMapping({ isActive }) {
             MAPPING
           </h2>
         </AnimatedTitle>
+        
+        <GalleryButton onClick={onOpenGallery} />
       </div>
 
       <div className="portfolio-section__content">
@@ -41,4 +44,3 @@ export default function ProjectionMapping({ isActive }) {
     </Section>
   )
 }
-
